@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 
 import com.laifeng.sopcastsdk.camera.CameraListener;
 import com.laifeng.sopcastsdk.configuration.CameraConfiguration;
@@ -38,6 +39,8 @@ public class LaifengLivingActivity extends AppCompatActivity {
     private CameraLivingView cameraLivingView;
     private AppCompatButton btn_start;
 
+    private EditText mEditText;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +49,7 @@ public class LaifengLivingActivity extends AppCompatActivity {
     }
 
     private void initialView() {
+        mEditText = findViewById(R.id.et_ip);
         cameraLivingView = findViewById(R.id.clv_laifeng_living);
         btn_start = findViewById(R.id.btn_living_start);
         initialLiving();
@@ -58,6 +62,16 @@ public class LaifengLivingActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.btn_living_end)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.d(TAG, "stop living");
+                        cameraLivingView.stop();
+                        mTcpSender.stop();
+                    }
+                });
+
     }
 
     //0竖屏, 1横屏
@@ -69,7 +83,8 @@ public class LaifengLivingActivity extends AppCompatActivity {
             cameraBuilder.setOrientation(CameraConfiguration.Orientation.PORTRAIT).setFacing(CameraConfiguration.Facing.BACK);
             CameraConfiguration cameraConfiguration = cameraBuilder.build();
             cameraLivingView.setCameraConfiguration(cameraConfiguration);
-            mVideoConfiguration = new VideoConfiguration.Builder().setSize(1080, 1920).build();
+//            mVideoConfiguration = new VideoConfiguration.Builder().setSize(1080, 1920).build();
+            mVideoConfiguration = new VideoConfiguration.Builder().build();
         } else {
             CameraConfiguration.Builder cameraBuilder = new CameraConfiguration.Builder();
             if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
@@ -77,14 +92,20 @@ public class LaifengLivingActivity extends AppCompatActivity {
             cameraBuilder.setOrientation(CameraConfiguration.Orientation.LANDSCAPE).setFacing(CameraConfiguration.Facing.BACK);
             CameraConfiguration cameraConfiguration = cameraBuilder.build();
             cameraLivingView.setCameraConfiguration(cameraConfiguration);
-            mVideoConfiguration = new VideoConfiguration.Builder().setSize(1920, 1080).build();
+//            mVideoConfiguration = new VideoConfiguration.Builder().setSize(1920, 1080).build();
+            mVideoConfiguration = new VideoConfiguration.Builder().build();
         }
         cameraLivingView.setVideoConfiguration(mVideoConfiguration);
         startCameraMil = System.currentTimeMillis();
         TcpPacker packer = new TcpPacker();
         packer.setSendAudio(false);
         cameraLivingView.setPacker(packer);    //设置发送器
-        mTcpSender = new TcpSender(Constant.ip, Constant.port);
+        String tempIp = mEditText.getText().toString().trim();
+        if (tempIp.isEmpty()) {
+            tempIp = Constant.ip;
+        }
+        Log.d(TAG, "IP=" + tempIp);
+        mTcpSender = new TcpSender(tempIp, Constant.port);
         mTcpSender.setSenderListener(mSenderListener);
         cameraLivingView.setSender(mTcpSender);
         cameraLivingView.setCameraOpenListener(new CameraListener() {

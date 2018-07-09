@@ -44,16 +44,17 @@ public class LaifengScreenRecordActivity extends com.laifeng.sopcastsdk.screen.S
             public void onClick(View view) {
                 if (!isRecord) {
                     if (!TextUtils.isEmpty(et_main.getText().toString())) {
-                        ip = btn_start.getText().toString();
+                        ip = et_main.getText().toString().trim();
                     }
                     Log.e("Test", "" + ip);
                     requestRecording();
                     Log.e("Test", "start record");
-                    btn_start.setText("start record");
+                    btn_start.setText("stop record");
                 } else {
+                    isRecord = false;
                     stopRecording();
                     Log.e("Test", "stop record");
-                    btn_start.setText("stop record");
+                    btn_start.setText("start record");
                 }
             }
         });
@@ -91,12 +92,13 @@ public class LaifengScreenRecordActivity extends com.laifeng.sopcastsdk.screen.S
 
     private void startRecord() {
         TcpPacker packer = new TcpPacker();
-        packer.setSendAudio(true);
+        packer.setSendAudio(false);
         packer.initAudioParams(AudioConfiguration.DEFAULT_FREQUENCY, 16, false);
         mVideoConfiguration = new VideoConfiguration.Builder().build();
         setVideoConfiguration(mVideoConfiguration);
         setRecordPacker(packer);
 
+        Log.d(TAG, "startRecord.ip=" + ip);
         tcpSender = new TcpSender(ip, Constant.port);
         tcpSender.setSenderListener(this);
         tcpSender.setVideoParams(mVideoConfiguration);

@@ -21,7 +21,8 @@ public final class AudioConfiguration {
     public static final int DEFAULT_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
     public static final int DEFAULT_AAC_PROFILE = MediaCodecInfo.CodecProfileLevel.AACObjectLC;
     public static final int DEFAULT_CHANNEL_COUNT = 2;
-    public static final boolean DEFAULT_AEC = true;
+    //YURI do not support aec
+    public static final boolean DEFAULT_AEC = false;
 
     public final int minBps;
     public final int maxBps;
