@@ -82,7 +82,7 @@ public class CameraVideoController implements IVideoController {
             SopCastLog.d(SopCastConstant.TAG, "Bps need change, but MediaCodec do not support.");
         }else {
             if (mRecorder != null) {
-                SopCastLog.d(SopCastConstant.TAG, "Bps change, current bps: " + bps);
+//                SopCastLog.d(SopCastConstant.TAG, "Bps change, current bps: " + bps);
                 mRecorder.setRecorderBps(bps);
                 result = true;
             }

@@ -200,7 +200,7 @@ public class NormalSendQueue implements ISendQueue {
                         averageDif += dif;
                         strLog = strLog + String.format("n%d:%d  ", i, dif);
                     }
-                    SopCastLog.d(SopCastConstant.TAG, strLog);
+//                    SopCastLog.d(SopCastConstant.TAG, strLog);
                     if (negativeCounter >= DEFAULT_NEGATIVE_COUNT || averageDif < -100) {
                         //坏
                         SopCastLog.d(SopCastConstant.TAG, "Bad Send Speed.");
@@ -209,7 +209,7 @@ public class NormalSendQueue implements ISendQueue {
                         }
                     } else {
                         //好
-                        SopCastLog.d(SopCastConstant.TAG, "Good Send Speed.");
+//                        SopCastLog.d(SopCastConstant.TAG, "Good Send Speed.");
                         if (mSendQueueListener != null) {
                             mSendQueueListener.good();
                         }

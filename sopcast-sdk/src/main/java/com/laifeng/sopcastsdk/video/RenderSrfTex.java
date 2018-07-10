@@ -9,6 +9,7 @@ import android.opengl.EGLSurface;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import com.laifeng.sopcastsdk.camera.CameraData;
 import com.laifeng.sopcastsdk.camera.CameraHolder;
@@ -178,8 +179,15 @@ public class RenderSrfTex {
         saveRenderState();
         {
             GlUtil.checkGlError("draw_S");
-
-            if (mRecorder.firstTimeSetup()) {
+            boolean firstTimeSetup = false;
+            try {
+                firstTimeSetup = mRecorder.firstTimeSetup();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("Yuri", "draw.error:" + e.getMessage());
+                return;
+            }
+            if (firstTimeSetup) {
                 mRecorder.startSwapData();
                 mRecorder.makeCurrent();
                 initGL();

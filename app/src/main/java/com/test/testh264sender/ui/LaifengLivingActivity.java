@@ -11,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.laifeng.sopcastsdk.camera.CameraHolder;
@@ -52,6 +54,7 @@ public class LaifengLivingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_living);
         initialView();
     }
@@ -179,20 +182,26 @@ public class LaifengLivingActivity extends AppCompatActivity {
         @Override
         public void onConnected() {
             Log.e(TAG, "onConnect success...");
-            cameraLivingView.start();
+            if (cameraLivingView != null) {
+                cameraLivingView.start();
+            }
             mCurrentBps = mVideoConfiguration.maxBps;
         }
 
         @Override
         public void onDisConnected() {
-            cameraLivingView.stop();
             Log.e(TAG, "onDisConnect");
+            if (cameraLivingView != null) {
+                cameraLivingView.stop();
+            }
         }
 
         @Override
         public void onPublishFail() {
-            cameraLivingView.stop();
             Log.e(TAG, "onPublishFail...");
+            if (cameraLivingView != null) {
+                cameraLivingView.stop();
+            }
         }
 
         @Override
@@ -206,7 +215,7 @@ public class LaifengLivingActivity extends AppCompatActivity {
                     }
                 }
             } else {
-                Log.d(TAG, "BPS_CHANGE good good good");
+//                Log.d(TAG, "BPS_CHANGE good good good");
             }
         }
 
@@ -260,6 +269,17 @@ public class LaifengLivingActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (mTcpSender != null) {
+            mTcpSender.stop();
+            mTcpSender = null;
+        }
+
+        if (cameraLivingView != null) {
+            cameraLivingView.stop();
+            cameraLivingView.release();
+            cameraLivingView = null;
+        }
+
         if (mMediaRecorder != null) {
             try {
                 mMediaRecorder.stop();

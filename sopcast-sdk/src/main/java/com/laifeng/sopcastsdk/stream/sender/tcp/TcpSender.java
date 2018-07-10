@@ -112,29 +112,29 @@ public class TcpSender implements Sender, SendQueueListener {
     private TcpConnectListener mTcpListener = new TcpConnectListener() {
         @Override
         public void onSocketConnectSuccess() {
-//            Log.e(TAG, "onSocketConnectSuccess");
+            Log.e(TAG, "onSocketConnectSuccess");
         }
 
         @Override
         public void onSocketConnectFail() {
-//            Log.e(TAG, "onSocketConnectFail");
+            Log.e(TAG, "onSocketConnectFail");
             disConnected();
         }
 
         @Override
         public void onTcpConnectSuccess() {
-//            Log.e(TAG, "onTcpConnectSuccess");
+            Log.e(TAG, "onTcpConnectSuccess");
         }
 
         @Override
         public void onTcpConnectFail() {
-//            Log.e(TAG, "onTcpConnectFail");
+            Log.e(TAG, "onTcpConnectFail");
             disConnected();
         }
 
         @Override
         public void onPublishSuccess() {
-//            Log.e(TAG, "onPublishSuccess");
+            Log.e(TAG, "onPublishSuccess");
             weakHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -145,7 +145,7 @@ public class TcpSender implements Sender, SendQueueListener {
 
         @Override
         public void onPublishFail() {
-//            Log.e(TAG, "onPublishFail");
+            Log.e(TAG, "onPublishFail");
             weakHandler.post(new Runnable() {
                 @Override
                 public void run() {
