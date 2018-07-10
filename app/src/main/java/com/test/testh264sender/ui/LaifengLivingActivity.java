@@ -1,14 +1,19 @@
 package com.test.testh264sender.ui;
 
 import android.content.pm.ActivityInfo;
+import android.graphics.SurfaceTexture;
+import android.media.MediaRecorder;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import com.laifeng.sopcastsdk.camera.CameraHolder;
 import com.laifeng.sopcastsdk.camera.CameraListener;
 import com.laifeng.sopcastsdk.configuration.CameraConfiguration;
 import com.laifeng.sopcastsdk.configuration.VideoConfiguration;
@@ -18,6 +23,8 @@ import com.laifeng.sopcastsdk.stream.sender.tcp.TcpSender;
 import com.laifeng.sopcastsdk.ui.CameraLivingView;
 import com.test.testh264sender.Constant;
 import com.test.testh264sender.R;
+
+import java.io.IOException;
 
 /**
  * Created by xu.wang
@@ -38,6 +45,7 @@ public class LaifengLivingActivity extends AppCompatActivity {
 
     private CameraLivingView cameraLivingView;
     private AppCompatButton btn_start;
+    private AppCompatButton mStopRecorderButton;
 
     private EditText mEditText;
 
@@ -71,6 +79,24 @@ public class LaifengLivingActivity extends AppCompatActivity {
                         mTcpSender.stop();
                     }
                 });
+
+        findViewById(R.id.btn_recorder).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    startRecorder();
+                }
+            }
+        });
+        mStopRecorderButton = findViewById(R.id.btn_recorder_stop);
+        mStopRecorderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mMediaRecorder != null) {
+                    mMediaRecorder.stop();
+                }
+            }
+        });
 
     }
 
@@ -198,4 +224,52 @@ public class LaifengLivingActivity extends AppCompatActivity {
             }
         }
     };
+
+
+    //////////////recorder
+    private MediaRecorder mMediaRecorder;
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void startRecorder() {
+
+        CameraHolder.instance().getCameraDevice().unlock();
+
+        mMediaRecorder = new MediaRecorder();
+        mMediaRecorder.setCamera(CameraHolder.instance().getCameraDevice());
+        mMediaRecorder.setOrientationHint(90);
+        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+        mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+        mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
+        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+        mMediaRecorder.setVideoSize(1280, 720);
+        mMediaRecorder.setVideoEncodingBitRate(2 * 1024 * 1024);// 设置帧频率，然后就清晰了
+        mMediaRecorder.setVideoFrameRate(15);
+        mMediaRecorder.setOutputFile("/sdcard/test12.mp4");
+
+        try {
+            mMediaRecorder.prepare();
+            mMediaRecorder.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mMediaRecorder != null) {
+            try {
+                mMediaRecorder.stop();
+                mMediaRecorder.release();
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            } finally {
+                mMediaRecorder = null;
+            }
+        }
+    }
+
+    /////////////////////
 }

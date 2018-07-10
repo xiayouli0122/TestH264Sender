@@ -7,6 +7,7 @@ import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.view.SurfaceHolder;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import com.laifeng.sopcastsdk.R;
@@ -229,5 +230,9 @@ public class CameraView extends FrameLayout {
                     MeasureSpec.EXACTLY);
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    public SurfaceHolder getSurfaceHolder() {
+        return mRenderSurfaceView.getHolder();
     }
 }

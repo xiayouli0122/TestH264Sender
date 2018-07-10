@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.hardware.camera2.CameraManager;
 
 import com.laifeng.sopcastsdk.camera.exception.CameraHardwareException;
 import com.laifeng.sopcastsdk.camera.exception.CameraNotSupportException;
@@ -73,7 +74,7 @@ public class CameraHolder {
         if(mCameraDatas == null || mCameraDatas.size() == 0) {
             mCameraDatas = CameraUtils.getAllCamerasData(isOpenBackFirst);
         }
-        CameraData cameraData = mCameraDatas.get(0);
+        CameraData cameraData = mCameraDatas.get(1);
         if(mCameraDevice != null && mCameraData == cameraData) {
             return mCameraDevice;
         }
@@ -113,6 +114,15 @@ public class CameraHolder {
                 releaseCamera();
             }
         }
+    }
+
+    //yuri
+    public SurfaceTexture getTexture() {
+        return mTexture;
+    }
+    //yuri
+    public Camera getCameraDevice() {
+        return mCameraDevice;
     }
 
     public State getState() {
