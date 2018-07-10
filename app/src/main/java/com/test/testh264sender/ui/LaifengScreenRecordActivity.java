@@ -94,7 +94,8 @@ public class LaifengScreenRecordActivity extends com.laifeng.sopcastsdk.screen.S
         TcpPacker packer = new TcpPacker();
         packer.setSendAudio(false);
         packer.initAudioParams(AudioConfiguration.DEFAULT_FREQUENCY, 16, false);
-        mVideoConfiguration = new VideoConfiguration.Builder().build();
+//        mVideoConfiguration = new VideoConfiguration.Builder().build();
+        mVideoConfiguration = new VideoConfiguration.Builder().setSize(640,360).build();
         setVideoConfiguration(mVideoConfiguration);
         setRecordPacker(packer);
 
