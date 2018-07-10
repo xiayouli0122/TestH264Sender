@@ -74,7 +74,7 @@ public class CameraHolder {
         if(mCameraDatas == null || mCameraDatas.size() == 0) {
             mCameraDatas = CameraUtils.getAllCamerasData(isOpenBackFirst);
         }
-        CameraData cameraData = mCameraDatas.get(1);
+        CameraData cameraData = mCameraDatas.get(0);
         if(mCameraDevice != null && mCameraData == cameraData) {
             return mCameraDevice;
         }

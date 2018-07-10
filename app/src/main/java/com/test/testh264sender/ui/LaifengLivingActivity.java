@@ -37,7 +37,7 @@ public class LaifengLivingActivity extends AppCompatActivity {
     private static final String TAG = "LaifengLivingActivity";
     private VideoConfiguration mVideoConfiguration;
     private int mCurrentBps;
-    private int mOrientation = 0;
+    private int mOrientation = 1;
     private long startCameraMil;
     private long successCameraMil;
     private boolean isFirst = true;
@@ -119,7 +119,8 @@ public class LaifengLivingActivity extends AppCompatActivity {
             CameraConfiguration cameraConfiguration = cameraBuilder.build();
             cameraLivingView.setCameraConfiguration(cameraConfiguration);
 //            mVideoConfiguration = new VideoConfiguration.Builder().setSize(1280, 720).build();
-            mVideoConfiguration = new VideoConfiguration.Builder().build();
+            mVideoConfiguration = new VideoConfiguration.Builder().setSize(640, 360).build();
+//            mVideoConfiguration = new VideoConfiguration.Builder().build();
         }
         cameraLivingView.setVideoConfiguration(mVideoConfiguration);
         startCameraMil = System.currentTimeMillis();
