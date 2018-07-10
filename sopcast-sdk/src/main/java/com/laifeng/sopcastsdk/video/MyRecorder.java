@@ -103,11 +103,17 @@ public class MyRecorder {
 
 	private void releaseEncoder() {
 		if (mMediaCodec != null) {
-			mMediaCodec.signalEndOfInputStream();
-			mMediaCodec.stop();
-			mMediaCodec.release();
-			mMediaCodec = null;
+			try {
+				mMediaCodec.signalEndOfInputStream();
+				mMediaCodec.stop();
+				mMediaCodec.release();
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				mMediaCodec = null;
+			}
 		}
+
 		if (mInputSurface != null) {
 			mInputSurface.release();
 			mInputSurface = null;

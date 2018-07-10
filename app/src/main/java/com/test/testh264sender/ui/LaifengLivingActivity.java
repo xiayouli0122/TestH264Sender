@@ -83,8 +83,8 @@ public class LaifengLivingActivity extends AppCompatActivity {
             cameraBuilder.setOrientation(CameraConfiguration.Orientation.PORTRAIT).setFacing(CameraConfiguration.Facing.BACK);
             CameraConfiguration cameraConfiguration = cameraBuilder.build();
             cameraLivingView.setCameraConfiguration(cameraConfiguration);
-//            mVideoConfiguration = new VideoConfiguration.Builder().setSize(1080, 1920).build();
-            mVideoConfiguration = new VideoConfiguration.Builder().build();
+            mVideoConfiguration = new VideoConfiguration.Builder().setSize(640, 360).build();
+//            mVideoConfiguration = new VideoConfiguration.Builder().build();
         } else {
             CameraConfiguration.Builder cameraBuilder = new CameraConfiguration.Builder();
             if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
@@ -92,7 +92,7 @@ public class LaifengLivingActivity extends AppCompatActivity {
             cameraBuilder.setOrientation(CameraConfiguration.Orientation.LANDSCAPE).setFacing(CameraConfiguration.Facing.BACK);
             CameraConfiguration cameraConfiguration = cameraBuilder.build();
             cameraLivingView.setCameraConfiguration(cameraConfiguration);
-//            mVideoConfiguration = new VideoConfiguration.Builder().setSize(1920, 1080).build();
+//            mVideoConfiguration = new VideoConfiguration.Builder().setSize(1280, 720).build();
             mVideoConfiguration = new VideoConfiguration.Builder().build();
         }
         cameraLivingView.setVideoConfiguration(mVideoConfiguration);
@@ -101,6 +101,7 @@ public class LaifengLivingActivity extends AppCompatActivity {
         packer.setSendAudio(false);
         cameraLivingView.setPacker(packer);    //设置发送器
         String tempIp = mEditText.getText().toString().trim();
+        Log.d(TAG, "tempIP:" + tempIp);
         if (tempIp.isEmpty()) {
             tempIp = Constant.ip;
         }
