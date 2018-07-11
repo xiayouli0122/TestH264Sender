@@ -47,6 +47,9 @@ public class LaifengLivingActivity extends AppCompatActivity {
 
     private CameraLivingView cameraLivingView;
     private AppCompatButton btn_start;
+    private AppCompatButton btn_stop;
+
+    private AppCompatButton mStartRecorderButton;
     private AppCompatButton mStopRecorderButton;
 
     private EditText mEditText;
@@ -63,6 +66,8 @@ public class LaifengLivingActivity extends AppCompatActivity {
         mEditText = findViewById(R.id.et_ip);
         cameraLivingView = findViewById(R.id.clv_laifeng_living);
         btn_start = findViewById(R.id.btn_living_start);
+        btn_stop = findViewById(R.id.btn_living_end);
+        btn_stop.setEnabled(false);
         initialLiving();
         btn_start.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,13 +96,18 @@ public class LaifengLivingActivity extends AppCompatActivity {
                 }
             }
         });
+        mStartRecorderButton = findViewById(R.id.btn_recorder);
         mStopRecorderButton = findViewById(R.id.btn_recorder_stop);
+        mStopRecorderButton.setEnabled(false);
         mStopRecorderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mMediaRecorder != null) {
                     mMediaRecorder.stop();
                 }
+
+                mStartRecorderButton.setEnabled(true);
+                mStopRecorderButton.setEnabled(false);
             }
         });
 
@@ -168,6 +178,13 @@ public class LaifengLivingActivity extends AppCompatActivity {
             @Override
             public void startSuccess() {
                 Log.e(TAG, "living start success");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        btn_start.setEnabled(false);
+                        btn_stop.setEnabled(true);
+                    }
+                });
             }
         });
     }
@@ -194,6 +211,14 @@ public class LaifengLivingActivity extends AppCompatActivity {
             if (cameraLivingView != null) {
                 cameraLivingView.stop();
             }
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    btn_start.setEnabled(true);
+                    btn_stop.setEnabled(false);
+                }
+            });
         }
 
         @Override
@@ -254,11 +279,15 @@ public class LaifengLivingActivity extends AppCompatActivity {
         mMediaRecorder.setVideoSize(1280, 720);
         mMediaRecorder.setVideoEncodingBitRate(2 * 1024 * 1024);// 设置帧频率，然后就清晰了
         mMediaRecorder.setVideoFrameRate(15);
-        mMediaRecorder.setOutputFile("/sdcard/test12.mp4");
+        String fileName = "video_" + System.currentTimeMillis() + ".mp4";
+        mMediaRecorder.setOutputFile("/sdcard/" + fileName);
 
         try {
             mMediaRecorder.prepare();
             mMediaRecorder.start();
+
+            mStartRecorderButton.setEnabled(false);
+            mStopRecorderButton.setEnabled(true);
         } catch (IOException e) {
             e.printStackTrace();
         }

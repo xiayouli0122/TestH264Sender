@@ -20,8 +20,6 @@ import com.test.testh264sender.ui.LaifengScreenRecordActivity;
 
 public class StartActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private AppCompatButton btn_living, btn_record;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,9 +28,8 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void initialView() {
-        btn_living = findViewById(R.id.btn_test_living);
-        btn_record = findViewById(R.id.btn_test_record);
-
+        AppCompatButton btn_living = findViewById(R.id.btn_test_living);
+        AppCompatButton btn_record = findViewById(R.id.btn_test_record);
         btn_living.setOnClickListener(this);
         btn_record.setOnClickListener(this);
     }

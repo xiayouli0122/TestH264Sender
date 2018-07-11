@@ -118,6 +118,8 @@ public class NormalSendQueue implements ISendQueue {
         } catch (InterruptedException e) {
             //do nothing
             showLog("take Frame exception" + e.toString());
+        } catch (IllegalMonitorStateException e) {
+            showLog("22.take Frame exception" + e.toString());
         }
         return frame;
     }

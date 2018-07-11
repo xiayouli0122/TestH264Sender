@@ -22,7 +22,6 @@ import java.io.IOException;
 public class LaifengScreenRecordActivity extends com.laifeng.sopcastsdk.screen.ScreenRecordActivity implements OnSenderListener {
     private AppCompatButton btn_start;
     private String ip;
-    private VideoConfiguration mVideoConfiguration;
     private TcpSender tcpSender;
     private final static String TAG = "LaifengScreenRecord";
     private boolean isRecord = false;
@@ -95,14 +94,14 @@ public class LaifengScreenRecordActivity extends com.laifeng.sopcastsdk.screen.S
         packer.setSendAudio(false);
         packer.initAudioParams(AudioConfiguration.DEFAULT_FREQUENCY, 16, false);
 //        mVideoConfiguration = new VideoConfiguration.Builder().build();
-        mVideoConfiguration = new VideoConfiguration.Builder().setSize(640,360).build();
-        setVideoConfiguration(mVideoConfiguration);
+        VideoConfiguration videoConfiguration = new VideoConfiguration.Builder().setSize(960, 540).build();
+        setVideoConfiguration(videoConfiguration);
         setRecordPacker(packer);
 
         Log.d(TAG, "startRecord.ip=" + ip);
         tcpSender = new TcpSender(ip, Constant.port);
         tcpSender.setSenderListener(this);
-        tcpSender.setVideoParams(mVideoConfiguration);
+        tcpSender.setVideoParams(videoConfiguration);
         tcpSender.connect();
         setRecordSender(tcpSender);
         startRecording();
