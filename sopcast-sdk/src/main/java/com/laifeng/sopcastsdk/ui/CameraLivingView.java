@@ -86,7 +86,9 @@ public class CameraLivingView extends CameraView {
     private void initView() {
         CameraVideoController videoController = new CameraVideoController(mRenderer);
         NormalAudioController audioController = new NormalAudioController();
-        mStreamController = new StreamController(videoController, audioController);
+        //Yuri no use audio
+//        mStreamController = new StreamController(videoController, audioController);
+        mStreamController = new StreamController(videoController, null);
         mRenderer.setCameraOpenListener(mCameraOpenListener);
     }
 
@@ -193,7 +195,8 @@ public class CameraLivingView extends CameraView {
                             }
                         });
                     }
-                    chooseVoiceMode();
+                    //Yuri 暂时不录声音
+//                    chooseVoiceMode();
                     screenOn();
                     mStreamController.start();
                 } else {

@@ -1,6 +1,7 @@
 package com.laifeng.sopcastsdk.controller;
 
 import android.media.MediaCodec;
+import android.util.Log;
 
 import com.laifeng.sopcastsdk.audio.OnAudioEncodeListener;
 import com.laifeng.sopcastsdk.configuration.AudioConfiguration;
@@ -68,6 +69,7 @@ public class StreamController implements OnAudioEncodeListener, OnVideoEncodeLis
                 mVideoController.start();
                 if (mAudioController != null) {
                     mAudioController.setAudioEncodeListener(StreamController.this);
+                    Log.d("Yuri", "mAudioController.start()");
                     mAudioController.start();
                 }
             }
