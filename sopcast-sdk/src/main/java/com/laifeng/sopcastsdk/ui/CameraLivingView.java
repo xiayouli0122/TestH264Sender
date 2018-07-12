@@ -7,6 +7,7 @@ import android.media.MediaCodecInfo;
 import android.os.Build;
 import android.os.PowerManager;
 import android.util.AttributeSet;
+import android.util.Log;
 
 import com.laifeng.sopcastsdk.camera.CameraData;
 import com.laifeng.sopcastsdk.camera.CameraListener;
@@ -50,7 +51,7 @@ public class CameraLivingView extends CameraView {
     public static final int AUDIO_AEC_ERROR = 7;
     public static final int SDK_VERSION_ERROR = 8;
 
-    private static final String TAG = SopCastConstant.TAG;
+    private static final String TAG = CameraLivingView.class.getSimpleName();
     private StreamController mStreamController;
     private Context mContext;
     private PowerManager.WakeLock mWakeLock;
@@ -306,6 +307,7 @@ public class CameraLivingView extends CameraView {
     }
 
     public void release() {
+        Log.d(TAG, "release()");
         screenOff();
         mWakeLock = null;
         CameraHolder.instance().releaseCamera();

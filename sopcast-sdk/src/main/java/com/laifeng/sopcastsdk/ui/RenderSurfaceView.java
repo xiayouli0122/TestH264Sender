@@ -7,7 +7,6 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 
-import com.laifeng.sopcastsdk.constant.SopCastConstant;
 import com.laifeng.sopcastsdk.camera.CameraHolder;
 import com.laifeng.sopcastsdk.utils.SopCastLog;
 import com.laifeng.sopcastsdk.video.MyRenderer;
@@ -23,6 +22,7 @@ import com.laifeng.sopcastsdk.video.effect.Effect;
  * @Version
  */
 public class RenderSurfaceView extends GLSurfaceView {
+    private static final String TAG = RenderSurfaceView.class.getSimpleName();
     private MyRenderer mRenderer;
 
     public RenderSurfaceView(Context context) {
@@ -52,7 +52,7 @@ public class RenderSurfaceView extends GLSurfaceView {
     private SurfaceHolder.Callback mSurfaceHolderCallback = new SurfaceHolder.Callback() {
         @Override
         public void surfaceDestroyed(SurfaceHolder holder) {
-            SopCastLog.d(SopCastConstant.TAG, "SurfaceView destroy");
+            SopCastLog.d(TAG, "SurfaceView destroy");
             CameraHolder.instance().stopPreview();
             CameraHolder.instance().releaseCamera();
         }
@@ -60,12 +60,12 @@ public class RenderSurfaceView extends GLSurfaceView {
         @TargetApi(Build.VERSION_CODES.GINGERBREAD)
         @Override
         public void surfaceCreated(SurfaceHolder holder) {
-            SopCastLog.d(SopCastConstant.TAG, "SurfaceView created");
+            SopCastLog.d(TAG, "SurfaceView created");
         }
 
         @Override
         public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-            SopCastLog.d(SopCastConstant.TAG, "SurfaceView width:" + width + " height:" + height);
+            SopCastLog.d(TAG, "SurfaceView width:" + width + " height:" + height);
         }
     };
 

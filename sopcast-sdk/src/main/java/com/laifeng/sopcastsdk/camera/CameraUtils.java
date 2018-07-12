@@ -7,13 +7,13 @@ import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.laifeng.sopcastsdk.blacklist.BlackListHelper;
 import com.laifeng.sopcastsdk.camera.exception.CameraDisabledException;
 import com.laifeng.sopcastsdk.camera.exception.CameraNotSupportException;
 import com.laifeng.sopcastsdk.camera.exception.NoCameraException;
 import com.laifeng.sopcastsdk.configuration.CameraConfiguration;
-import com.laifeng.sopcastsdk.constant.SopCastConstant;
 import com.laifeng.sopcastsdk.utils.SopCastLog;
 
 import java.util.ArrayList;
@@ -32,7 +32,10 @@ import java.util.List;
 @TargetApi(14)
 public class CameraUtils {
 
+    private static final String TAG = CameraUtils.class.getSimpleName();
+
     public static List<CameraData> getAllCamerasData(boolean isBackFirst) {
+        Log.d(TAG, "getAllCamerasData:" + isBackFirst);
         ArrayList<CameraData> cameraDatas = new ArrayList<>();
         Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
         int numberOfCameras = Camera.getNumberOfCameras();
@@ -59,6 +62,7 @@ public class CameraUtils {
 
     public static void initCameraParams(Camera camera, CameraData cameraData, boolean isTouchMode, CameraConfiguration configuration)
             throws CameraNotSupportException {
+        Log.d(TAG, "initCameraParams");
         boolean isLandscape = (configuration.orientation != CameraConfiguration.Orientation.PORTRAIT);
         int cameraWidth = Math.max(configuration.height, configuration.width);
         int cameraHeight = Math.min(configuration.height, configuration.width);
@@ -84,7 +88,7 @@ public class CameraUtils {
     public static void setPreviewFps(Camera camera, int fps, Camera.Parameters parameters) {
         //设置摄像头预览帧率
         if (BlackListHelper.deviceInFpsBlacklisted()) {
-            SopCastLog.d(SopCastConstant.TAG, "Device in fps setting black list, so set the camera fps 15");
+            SopCastLog.d(TAG, "Device in fps setting black list, so set the camera fps 15");
             fps = 15;
         }
         try {
@@ -130,7 +134,7 @@ public class CameraUtils {
             cameraData.cameraHeight = size.height;
         }
         //设置预览大小
-        SopCastLog.d(SopCastConstant.TAG, "Camera Width: " + size.width + "    Height: " + size.height);
+        SopCastLog.d(TAG, "Camera Width: " + size.width + "    Height: " + size.height);
         try {
             parameters.setPreviewSize(cameraData.cameraWidth, cameraData.cameraHeight);
             camera.setParameters(parameters);
@@ -249,13 +253,14 @@ public class CameraUtils {
 
     public static void checkCameraService(Context context)
             throws CameraDisabledException, NoCameraException {
+        Log.d(TAG, "checkCameraService");
         // Check if device policy has disabled the camera.
         DevicePolicyManager dpm = (DevicePolicyManager) context.getSystemService(
                 Context.DEVICE_POLICY_SERVICE);
         if (dpm.getCameraDisabled(null)) {
             throw new CameraDisabledException();
         }
-        List<CameraData> cameraDatas = getAllCamerasData(false);
+        List<CameraData> cameraDatas = getAllCamerasData(true);
         if (cameraDatas.size() == 0) {
             throw new NoCameraException();
         }

@@ -36,6 +36,9 @@ import javax.microedition.khronos.opengles.GL10;
  */
 @TargetApi(18)
 public class MyRenderer implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameAvailableListener{
+
+    private static final String TAG = MyRenderer.class.getSimpleName();
+
     private int mSurfaceTextureId = -1;
     private SurfaceTexture mSurfaceTexture;
     private Watermark mWatermark;
@@ -69,7 +72,7 @@ public class MyRenderer implements GLSurfaceView.Renderer, SurfaceTexture.OnFram
         mVideoConfiguration = videoConfiguration;
         mVideoWidth = VideoMediaCodec.getVideoSize(mVideoConfiguration.width);
         mVideoHeight = VideoMediaCodec.getVideoSize(mVideoConfiguration.height);
-        Log.i("SSN","mVideoWidth = " + mVideoWidth + "  mVideoHeight = " + mVideoHeight);
+        Log.i(TAG,"mVideoWidth = " + mVideoWidth + "  mVideoHeight = " + mVideoHeight);
         if(mRenderScreen != null) {
             mRenderScreen.setVideoSize(mVideoWidth, mVideoHeight);
         }
@@ -104,6 +107,7 @@ public class MyRenderer implements GLSurfaceView.Renderer, SurfaceTexture.OnFram
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
+        Log.d(TAG, "onSurfaceChanged");
         startCameraPreview();
         if(isCameraOpen) {
             if (mRenderScreen == null) {
@@ -138,6 +142,7 @@ public class MyRenderer implements GLSurfaceView.Renderer, SurfaceTexture.OnFram
     }
 
     private void initSurfaceTexture() {
+        Log.d(TAG, "initSurfaceTexture");
         int[] textures = new int[1];
         GLES20.glGenTextures(1, textures, 0);
         mSurfaceTextureId = textures[0];
@@ -166,6 +171,7 @@ public class MyRenderer implements GLSurfaceView.Renderer, SurfaceTexture.OnFram
     }
 
     private void startCameraPreview() {
+        Log.d(TAG, "startCameraPreview");
         try {
             CameraUtils.checkCameraService(mView.getContext());
         } catch (CameraDisabledException e) {
@@ -178,15 +184,19 @@ public class MyRenderer implements GLSurfaceView.Renderer, SurfaceTexture.OnFram
             return;
         }
         CameraHolder.State state = CameraHolder.instance().getState();
+        Log.d(TAG, "startCameraPreview.22.state=" + state);
         CameraHolder.instance().setSurfaceTexture(mSurfaceTexture);
         if (state != CameraHolder.State.PREVIEW) {
             try {
+                Log.d(TAG, "startCameraPreview.openCamera");
                 CameraHolder.instance().openCamera();
+                Log.d(TAG, "startCameraPreview.startPreview");
                 CameraHolder.instance().startPreview();
                 if(mCameraOpenListener != null) {
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
+                            Log.d(TAG, "startCameraPreview.onOpenSuccess");
                             mCameraOpenListener.onOpenSuccess();
                         }
                     });

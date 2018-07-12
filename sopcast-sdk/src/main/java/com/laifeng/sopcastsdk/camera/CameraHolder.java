@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.camera2.CameraManager;
+import android.util.Log;
 
 import com.laifeng.sopcastsdk.camera.exception.CameraHardwareException;
 import com.laifeng.sopcastsdk.camera.exception.CameraNotSupportException;
@@ -36,7 +37,8 @@ public class CameraHolder {
     private State mState;
     private SurfaceTexture mTexture;
     private boolean isTouchMode = false;
-    private boolean isOpenBackFirst = false;
+    //是否有限打开后置摄像头
+    private boolean isOpenBackFirst = true;
     private CameraConfiguration mConfiguration = CameraConfiguration.createDefault();
 
     public enum State {
@@ -72,6 +74,7 @@ public class CameraHolder {
     public synchronized Camera openCamera()
             throws CameraHardwareException, CameraNotSupportException {
         if(mCameraDatas == null || mCameraDatas.size() == 0) {
+            Log.d(TAG, "openCamera:" + isOpenBackFirst);
             mCameraDatas = CameraUtils.getAllCamerasData(isOpenBackFirst);
         }
         CameraData cameraData = mCameraDatas.get(0);
@@ -79,6 +82,7 @@ public class CameraHolder {
             return mCameraDevice;
         }
         if (mCameraDevice != null) {
+            Log.d(TAG, "openCamera.cameraDevices is no null");
             releaseCamera();
         }
         try {
@@ -106,11 +110,13 @@ public class CameraHolder {
     }
 
     public void setSurfaceTexture(SurfaceTexture texture) {
+        Log.d(TAG, "setSurfaceTexture.state=" + mState);
         mTexture = texture;
         if(mState == State.PREVIEW && mCameraDevice != null && mTexture != null) {
             try {
                 mCameraDevice.setPreviewTexture(mTexture);
             } catch (IOException e) {
+                e.printStackTrace();
                 releaseCamera();
             }
         }
@@ -136,6 +142,7 @@ public class CameraHolder {
     }
 
     public synchronized void startPreview() {
+        Log.d(TAG, "CameraHolder.startPreview");
         if(mState != State.OPENED) {
             return;
         }
@@ -146,12 +153,13 @@ public class CameraHolder {
             return;
         }
         try {
+            Log.d(TAG, "CameraHolder.startPreview.2");
             mCameraDevice.setPreviewTexture(mTexture);
             mCameraDevice.startPreview();
             mState = State.PREVIEW;
         } catch (Exception e) {
-            releaseCamera();
             e.printStackTrace();
+            releaseCamera();
         }
     }
 
@@ -174,6 +182,7 @@ public class CameraHolder {
     }
 
     public synchronized void releaseCamera() {
+        Log.d(TAG, "releaseCamera()");
         if(mState == State.PREVIEW) {
             stopPreview();
         }

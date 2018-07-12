@@ -115,6 +115,7 @@ public class LaifengLivingActivity extends AppCompatActivity {
 
     //0竖屏, 1横屏
     private void initialLiving() {
+        Log.d(TAG, "initialLiving");
         if (mOrientation == 0) {
             CameraConfiguration.Builder cameraBuilder = new CameraConfiguration.Builder();
             if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
@@ -270,7 +271,7 @@ public class LaifengLivingActivity extends AppCompatActivity {
 
         mMediaRecorder = new MediaRecorder();
         mMediaRecorder.setCamera(CameraHolder.instance().getCameraDevice());
-        mMediaRecorder.setOrientationHint(90);
+        mMediaRecorder.setOrientationHint(270);
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
@@ -298,6 +299,7 @@ public class LaifengLivingActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d(TAG, "onDestroy()");
         if (mTcpSender != null) {
             mTcpSender.stop();
             mTcpSender = null;
