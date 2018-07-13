@@ -2,6 +2,7 @@ package com.test.testh264sender.ui;
 
 import android.content.pm.ActivityInfo;
 import android.graphics.SurfaceTexture;
+import android.hardware.Camera;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import com.test.testh264sender.Constant;
 import com.test.testh264sender.R;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by xu.wang
@@ -270,8 +272,8 @@ public class LaifengLivingActivity extends AppCompatActivity {
         CameraHolder.instance().getCameraDevice().unlock();
 
         mMediaRecorder = new MediaRecorder();
+        mMediaRecorder.setOrientationHint(90);
         mMediaRecorder.setCamera(CameraHolder.instance().getCameraDevice());
-        mMediaRecorder.setOrientationHint(270);
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);

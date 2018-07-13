@@ -89,6 +89,13 @@ public class CameraHolder {
             SopCastLog.d(TAG, "open camera " + cameraData.cameraID);
 //            Log.e("CameraHolder","width " + cameraData.cameraWidth + "  height  " + cameraData.cameraHeight);
             mCameraDevice = Camera.open(cameraData.cameraID);
+
+//            Camera.Parameters parameters = mCameraDevice.getParameters();
+//            List<Camera.Size> supportedPreviewSizes = parameters.getSupportedPreviewSizes();
+//            for (Camera.Size size : supportedPreviewSizes) {
+//                Log.d(TAG, size.width + " X " + size.height);
+//            }
+
         } catch (RuntimeException e) {
             SopCastLog.e(TAG, "fail to connect Camera");
             throw new CameraHardwareException(e);
