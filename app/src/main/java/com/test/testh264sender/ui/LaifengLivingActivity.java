@@ -60,6 +60,7 @@ public class LaifengLivingActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_living);
         initialView();
     }
@@ -135,7 +136,7 @@ public class LaifengLivingActivity extends AppCompatActivity {
             CameraConfiguration cameraConfiguration = cameraBuilder.build();
             cameraLivingView.setCameraConfiguration(cameraConfiguration);
 //            mVideoConfiguration = new VideoConfiguration.Builder().setSize(1280, 720).build();
-            mVideoConfiguration = new VideoConfiguration.Builder().setSize(640, 360).build();
+            mVideoConfiguration = new VideoConfiguration.Builder().setSize(960, 640).build();
 //            mVideoConfiguration = new VideoConfiguration.Builder().build();
         }
         cameraLivingView.setVideoConfiguration(mVideoConfiguration);
