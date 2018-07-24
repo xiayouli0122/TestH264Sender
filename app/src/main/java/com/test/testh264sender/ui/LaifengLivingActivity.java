@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.laifeng.sopcastsdk.camera.CameraHolder;
 import com.laifeng.sopcastsdk.camera.CameraListener;
@@ -67,6 +68,7 @@ public class LaifengLivingActivity extends AppCompatActivity {
 
     private void initialView() {
         mEditText = findViewById(R.id.et_ip);
+        mEditText.setVisibility(View.GONE);
         cameraLivingView = findViewById(R.id.clv_laifeng_living);
         btn_start = findViewById(R.id.btn_living_start);
         btn_stop = findViewById(R.id.btn_living_end);
@@ -260,6 +262,19 @@ public class LaifengLivingActivity extends AppCompatActivity {
                 }
             } else {
                 Log.d(TAG, "BPS_CHANGE bad down 100");
+
+                if (cameraLivingView != null) {
+                    cameraLivingView.stop();
+                }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "连接异常，断开连接", Toast.LENGTH_SHORT).show();
+                        btn_start.setEnabled(true);
+                        btn_stop.setEnabled(false);
+                    }
+                });
             }
         }
     };
