@@ -1,20 +1,21 @@
 package com.test.testh264sender.ui;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.SurfaceTexture;
-import android.hardware.Camera;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.laifeng.sopcastsdk.camera.CameraHolder;
@@ -28,8 +29,17 @@ import com.laifeng.sopcastsdk.ui.CameraLivingView;
 import com.test.testh264sender.Constant;
 import com.test.testh264sender.R;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by xu.wang
@@ -42,20 +52,17 @@ public class LaifengLivingActivity extends AppCompatActivity {
     private static final String TAG = "LaifengLivingActivity";
     private VideoConfiguration mVideoConfiguration;
     private int mCurrentBps;
-    private int mOrientation = 1;
-    private long startCameraMil;
-    private long successCameraMil;
     private boolean isFirst = true;
     private TcpSender mTcpSender;
 
     private CameraLivingView cameraLivingView;
-    private AppCompatButton btn_start;
-    private AppCompatButton btn_stop;
-
-    private AppCompatButton mStartRecorderButton;
-    private AppCompatButton mStopRecorderButton;
+    private TextView mLivingBtn;
+    private TextView mRecordBtn;
+    private boolean mIsLiving = false;
+    private boolean mIsRecording = false;
 
     private EditText mEditText;
+    private TextView mRecordTimeView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,61 +73,58 @@ public class LaifengLivingActivity extends AppCompatActivity {
         initialView();
     }
 
+
     private void initialView() {
         mEditText = findViewById(R.id.et_ip);
         mEditText.setVisibility(View.GONE);
         cameraLivingView = findViewById(R.id.clv_laifeng_living);
-        btn_start = findViewById(R.id.btn_living_start);
-        btn_stop = findViewById(R.id.btn_living_end);
-        btn_stop.setEnabled(false);
+        mLivingBtn = findViewById(R.id.btn_living);
         initialLiving();
-        btn_start.setOnClickListener(new View.OnClickListener() {
+        mLivingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cameraLivingView.start();
-                mTcpSender.start();
-                mTcpSender.connect();
+                if (mIsLiving) {
+                    stopLiving();
+                } else {
+                    startLiving();
+                }
             }
         });
 
-        findViewById(R.id.btn_living_end)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Log.d(TAG, "stop living");
-                        cameraLivingView.stop();
-                        mTcpSender.stop();
-                    }
-                });
+        mRecordTimeView = findViewById(R.id.tv_record_time);
 
         findViewById(R.id.btn_recorder).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                if (mIsRecording) {
+                    stopRecorder();
+                } else {
                     startRecorder();
                 }
             }
         });
-        mStartRecorderButton = findViewById(R.id.btn_recorder);
-        mStopRecorderButton = findViewById(R.id.btn_recorder_stop);
-        mStopRecorderButton.setEnabled(false);
-        mStopRecorderButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mMediaRecorder != null) {
-                    mMediaRecorder.stop();
-                }
+        mRecordBtn = findViewById(R.id.btn_recorder);
+    }
 
-                mStartRecorderButton.setEnabled(true);
-                mStopRecorderButton.setEnabled(false);
-            }
-        });
+    private void startLiving() {
+        Log.d(TAG, "start living");
+        mIsLiving = true;
+        cameraLivingView.start();
+        mTcpSender.start();
+        mTcpSender.connect();
+    }
 
+    private void stopLiving() {
+        Log.d(TAG, "stop living");
+        mIsLiving = false;
+        cameraLivingView.stop();
+        mTcpSender.stop();
     }
 
     //0竖屏, 1横屏
     private void initialLiving() {
         Log.d(TAG, "initialLiving");
+        int mOrientation = 1;
         if (mOrientation == 0) {
             CameraConfiguration.Builder cameraBuilder = new CameraConfiguration.Builder();
             if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
@@ -138,11 +142,10 @@ public class LaifengLivingActivity extends AppCompatActivity {
             CameraConfiguration cameraConfiguration = cameraBuilder.build();
             cameraLivingView.setCameraConfiguration(cameraConfiguration);
 //            mVideoConfiguration = new VideoConfiguration.Builder().setSize(1280, 720).build();
-            mVideoConfiguration = new VideoConfiguration.Builder().setSize(960, 640).build();
+            mVideoConfiguration = new VideoConfiguration.Builder().setSize(960, 540).build();
 //            mVideoConfiguration = new VideoConfiguration.Builder().build();
         }
         cameraLivingView.setVideoConfiguration(mVideoConfiguration);
-        startCameraMil = System.currentTimeMillis();
         TcpPacker packer = new TcpPacker();
         packer.setSendAudio(false);
         cameraLivingView.setPacker(packer);    //设置发送器
@@ -187,8 +190,8 @@ public class LaifengLivingActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        btn_start.setEnabled(false);
-                        btn_stop.setEnabled(true);
+                        mLivingBtn.setText("停止直播");
+                        mLivingBtn.setSelected(true);
                     }
                 });
             }
@@ -221,8 +224,8 @@ public class LaifengLivingActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    btn_start.setEnabled(true);
-                    btn_stop.setEnabled(false);
+                    mLivingBtn.setText("开始直播");
+                    mLivingBtn.setSelected(false);
                 }
             });
         }
@@ -271,8 +274,8 @@ public class LaifengLivingActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         Toast.makeText(getApplicationContext(), "连接异常，断开连接", Toast.LENGTH_SHORT).show();
-                        btn_start.setEnabled(true);
-                        btn_stop.setEnabled(false);
+                        mLivingBtn.setText("开始直播");
+                        mLivingBtn.setSelected(false);
                     }
                 });
             }
@@ -282,36 +285,98 @@ public class LaifengLivingActivity extends AppCompatActivity {
 
     //////////////recorder
     private MediaRecorder mMediaRecorder;
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void startRecorder() {
+    private String filePath;
 
+    private void startRecorder() {
+//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+//            Toast.makeText(getApplicationContext(), "不支持")
+//        }
         CameraHolder.instance().getCameraDevice().unlock();
 
         mMediaRecorder = new MediaRecorder();
-        mMediaRecorder.setOrientationHint(90);
+        mMediaRecorder.setOrientationHint(0);
         mMediaRecorder.setCamera(CameraHolder.instance().getCameraDevice());
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
         mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-        mMediaRecorder.setVideoSize(1280, 720);
+        mMediaRecorder.setVideoSize(1920, 1080);
         mMediaRecorder.setVideoEncodingBitRate(2 * 1024 * 1024);// 设置帧频率，然后就清晰了
-        mMediaRecorder.setVideoFrameRate(15);
+        mMediaRecorder.setVideoFrameRate(20);
         String fileName = "video_" + System.currentTimeMillis() + ".mp4";
-        mMediaRecorder.setOutputFile("/sdcard/" + fileName);
+        filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES) + "/" + fileName;
+        mMediaRecorder.setOutputFile(filePath);
 
         try {
             mMediaRecorder.prepare();
             mMediaRecorder.start();
 
-            mStartRecorderButton.setEnabled(false);
-            mStopRecorderButton.setEnabled(true);
+            mIsRecording = true;
+            startTimer();
+
+            mRecordBtn.setText("停止录制");
+            mRecordBtn.setSelected(true);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    private void stopRecorder() {
+        if (mMediaRecorder != null) {
+            mMediaRecorder.stop();
+        }
 
+        mIsRecording = false;
+
+        stopTimer();
+
+        Log.d(TAG, "filepath:" + filePath);
+        Intent scanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        scanIntent.setData(Uri.fromFile(new File(filePath)));
+        sendBroadcast(scanIntent);
+
+        Toast.makeText(getApplicationContext(), "已保存到:" + filePath, Toast.LENGTH_SHORT).show();
+        mRecordBtn.setText("开始录制");
+        mRecordBtn.setSelected(false);
+    }
+
+    private int mTime = 0;
+    private SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss", Locale.CHINA);
+    private Disposable mDisposable;
+    private void startTimer() {
+        mTime = 0;
+        mRecordTimeView.setVisibility(View.VISIBLE);
+        mRecordTimeView.setText(getDate(0));
+        mDisposable = Observable.interval(1, TimeUnit.SECONDS)
+                .subscribe(new Consumer<Long>() {
+                    @Override
+                    public void accept(Long aLong) {
+                        mTime++;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                String time = getDate(mTime * 1000);
+                                mRecordTimeView.setText(time);
+                            }
+                        });
+                    }
+                });
+    }
+
+    private void stopTimer() {
+        mDisposable.dispose();
+        mRecordTimeView.setVisibility(View.GONE);
+    }
+
+    /**
+     * 时间格式化
+     * @param time
+     * @return
+     */
+    public String getDate(long time) {
+        Date data = new Date(time);
+        return format.format(data);
     }
 
     @Override

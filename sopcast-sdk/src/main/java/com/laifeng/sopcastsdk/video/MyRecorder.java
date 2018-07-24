@@ -15,7 +15,6 @@ import com.laifeng.sopcastsdk.utils.SopCastLog;
 import java.nio.ByteBuffer;
 import java.util.concurrent.locks.ReentrantLock;
 
-@TargetApi(18)
 public class MyRecorder {
 	private MediaCodec mMediaCodec;
 	private InputSurface mInputSurface;

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
@@ -18,39 +19,48 @@
         />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_below="@+id/et_ip"
         >
 
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btn_living_start"
+        <TextView
+            android:id="@+id/btn_living"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="直播"/>
+            android:background="@drawable/bg_button"
+            android:padding="10dp"
+            android:textColor="#fff"
+            android:text="开始直播"/>
 
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btn_living_end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="停止直播"/>
-
-        <android.support.v7.widget.AppCompatButton
+        <TextView
             android:id="@+id/btn_recorder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_marginLeft="16dp"
+            android:background="@drawable/bg_button"
+            android:textColor="#fff"
             android:text="开始录制"/>
 
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btn_recorder_stop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="停止录制"/>
-
-
-
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_record_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_alignParentRight="true"
+        android:background="#33000000"
+        android:drawableLeft="@drawable/bg_record_time"
+        android:drawablePadding="8dp"
+        android:padding="12dp"
+        android:textColor="#fff"
+        android:textSize="20sp"
+        tools:text="12:33"
+        android:visibility="gone"
+        />
 
 
 </RelativeLayout>
