@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Formatter;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -71,6 +72,9 @@ public class LaifengLivingActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_living);
         initialView();
+
+        mFormatBuilder = new StringBuilder();
+        mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
     }
 
 
@@ -343,11 +347,13 @@ public class LaifengLivingActivity extends AppCompatActivity {
 
     private int mTime = 0;
     private SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss", Locale.CHINA);
+    private StringBuilder mFormatBuilder;
+    private Formatter mFormatter;
     private Disposable mDisposable;
     private void startTimer() {
         mTime = 0;
         mRecordTimeView.setVisibility(View.VISIBLE);
-        mRecordTimeView.setText(getDate(0));
+        mRecordTimeView.setText(stringForTime(0));
         mDisposable = Observable.interval(1, TimeUnit.SECONDS)
                 .subscribe(new Consumer<Long>() {
                     @Override
@@ -356,7 +362,7 @@ public class LaifengLivingActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                String time = getDate(mTime * 1000);
+                                String time = stringForTime(mTime);
                                 mRecordTimeView.setText(time);
                             }
                         });
@@ -369,14 +375,13 @@ public class LaifengLivingActivity extends AppCompatActivity {
         mRecordTimeView.setVisibility(View.GONE);
     }
 
-    /**
-     * 时间格式化
-     * @param time
-     * @return
-     */
-    public String getDate(long time) {
-        Date data = new Date(time);
-        return format.format(data);
+    private String stringForTime(int timeSec) {
+
+        int seconds = timeSec % 60;
+        int minutes = (timeSec / 60) % 60;
+
+        mFormatBuilder.setLength(0);
+        return mFormatter.format("%02d:%02d", minutes, seconds).toString();
     }
 
     @Override
