@@ -38,6 +38,8 @@
 
         <activity android:name=".upload.VideoUploadActivity"
                   android:screenOrientation="portrait" />
+        <activity android:name=".ui.UploadActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.DownloadActivity" android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

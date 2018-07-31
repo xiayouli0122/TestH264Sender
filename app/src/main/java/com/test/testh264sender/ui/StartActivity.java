@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.test.testh264sender.R;
 import com.test.testh264sender.Utils;
+import com.test.testh264sender.upload.VideoUploadActivity;
 import com.yuri.xlog.Settings;
 import com.yuri.xlog.XLog;
 
@@ -62,6 +63,8 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
         btn_record.setOnClickListener(this);
         findViewById(R.id.btn_wifi_setting)
                 .setOnClickListener(this);
+        findViewById(R.id.btn_upload).setOnClickListener(this);
+        findViewById(R.id.btn_download).setOnClickListener(this);
     }
 
     @Override
@@ -77,6 +80,12 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.btn_wifi_setting:
                 startActivity(new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS));
+                break;
+            case R.id.btn_download:
+                startActivity(new Intent(this, DownloadActivity.class));
+                break;
+            case R.id.btn_upload:
+                startActivity(new Intent(this, VideoUploadActivity.class));
                 break;
         }
     }
