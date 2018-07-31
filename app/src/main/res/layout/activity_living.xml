@@ -43,6 +43,14 @@
             android:textColor="#fff"
             android:text="开始录制"/>
 
+        <Button
+            android:id="@+id/btn_upload_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="上传录像"
+            android:visibility="gone"
+            />
+
     </LinearLayout>
 
     <TextView

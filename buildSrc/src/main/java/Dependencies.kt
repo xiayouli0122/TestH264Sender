@@ -83,4 +83,9 @@ object Libs {
     val ali_oss = "com.aliyun.dpa:oss-android-sdk:2.3.0"
 
     val zxing = "com.journeyapps:zxing-android-embedded:3.3.0"
+
+    //加载ImageView
+    val imageview_subsampling = "com.davemorrissey.labs:subsampling-scale-image-view:3.10.0"
+
+    val log = "com.yuri.xlog:xlog:1.1.0"
 }

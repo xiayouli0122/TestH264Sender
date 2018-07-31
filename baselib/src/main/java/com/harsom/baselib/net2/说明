@@ -1,0 +1,4 @@
+net2包是最初的请求架构
+全部采用josn put的方式请求
+request 和 response都是固定的
+迪乐姆和园长端以及视频app得服务器都是这样设计的

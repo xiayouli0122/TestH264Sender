@@ -28,6 +28,10 @@ dependencies {
     implementation project(':sopcast-sdk')
     implementation 'com.android.support:design:26.1.0'
 
+    implementation project(':baselib')
+
     implementation Libs.rxjava
     implementation Libs.rxandroid
+    implementation Libs.ali_oss
+    implementation Libs.log
 }

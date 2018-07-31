@@ -28,6 +28,7 @@ import com.laifeng.sopcastsdk.stream.sender.tcp.TcpSender;
 import com.laifeng.sopcastsdk.ui.CameraLivingView;
 import com.test.testh264sender.Constant;
 import com.test.testh264sender.R;
+import com.test.testh264sender.upload.VideoUploadActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -108,6 +109,17 @@ public class LaifengLivingActivity extends AppCompatActivity {
             }
         });
         mRecordBtn = findViewById(R.id.btn_recorder);
+
+        findViewById(R.id.btn_upload_video)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent();
+                        intent.putExtra(VideoUploadActivity.EXTRA_VIDEO_PATH, filePath);
+                        intent.setClass(LaifengLivingActivity.this, VideoUploadActivity.class);
+                        startActivity(intent);
+                    }
+                });
     }
 
     private void startLiving() {

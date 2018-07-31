@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import com.test.testh264sender.R;
 import com.test.testh264sender.Utils;
+import com.yuri.xlog.Settings;
+import com.yuri.xlog.XLog;
 
 /**
  * Created by xu.wang
@@ -29,6 +31,8 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
         initialView();
+
+        XLog.initialize(Settings.getInstance().setAppTag("Yuri"));
 
         mWifiInfoView = findViewById(R.id.tv_wifi_info);
     }
